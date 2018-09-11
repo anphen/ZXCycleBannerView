@@ -17,7 +17,6 @@
 @property (nonatomic, strong) MASConstraint *widthConstraint;
 @property (nonatomic, strong) MASConstraint *hegihtConstraint;
 
-
 - (instancetype)initWithNormalImage:(NSString *)normalImage selectImage:(NSString *)selectImage;
 
 @end
@@ -65,6 +64,8 @@
     self = [super initWithFrame:frame];
     if (self) {
         [self initialization];
+        self.contentMode = UIViewContentModeScaleAspectFit;
+        self.clipsToBounds = YES;
     }
     return self;
 }
@@ -98,7 +99,6 @@
         [self.dotContentView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.bottom.mas_equalTo(0);
             make.centerX.mas_equalTo(self.mas_centerX);
-//            make.width.mas_equalTo(self.dotNormalSize.width * (self.numberOfPages - 1) + self.dotSelectSize.width + (self.numberOfPages - 1) * self.horizontalSpace );
         }];
         DotImageControl *lastDot = nil;
         for (int i = 0; i< _numberOfPages; i++) {

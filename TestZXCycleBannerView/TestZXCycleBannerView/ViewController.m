@@ -8,10 +8,9 @@
 
 #import "ViewController.h"
 #import "ZXCycleBannerView.h"
+#import "ZXPinProductsView.h"
 
-#define kRandomColor  [UIColor colorWithRed:arc4random_uniform(255)/255.0 green:arc4random_uniform(255)/255.0 blue:arc4random_uniform(255)/255.0 alpha:1]
-
-@interface ViewController ()<ZXCycleBannerViewDelegate, ZXCycleBannerViewDataSource>
+@interface ViewController ()<ZXCycleBannerViewDelegate, ZXCycleBannerViewDataSource, ZXPinProductViewDelegate>
 
 @end
 
@@ -19,6 +18,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     ZXCycleBannerView *bannerView = [[ZXCycleBannerView alloc]initWithFrame:CGRectMake(0, 240, self.view.frame.size.width, self.view.frame.size.width * 110 /169.0)];
     bannerView.delegate = self;
     bannerView.dataSource = self;
@@ -26,8 +26,17 @@
     bannerView.autoScrollTimeInterval = 3.0;
     bannerView.autoScroll = YES;
     bannerView.showPageControl = YES;
+    
+//    ZXPinProductsView *view = [[ZXPinProductsView alloc]initWithFrame:CGRectMake(0, 200, self.view.frame.size.width, [ZXPinProductsView cellHeightWithType:ZXPinProductViewTypePinCount])];
+//    [view configCellWithProducts:@[@"1",@"2",@"3",@"4",@"5",@"6",@"7",@"8",@"9",@"10",@"11",@"12",@"13",@"14",@"15"]
+//                            type:ZXPinProductViewTypePinCount];
+//    view.delegate = self;
+//    [self.view addSubview:view];
 }
 
+- (void)clickProdView:(ZXPinProductView *)prodView atIndex:(NSInteger)index{
+    NSLog(@"======== index = %li =====", index);
+}
 
 - (NSInteger)numberOfItemsZXCycleBannerView:(ZXCycleBannerView *)bannerView{
     return 5;

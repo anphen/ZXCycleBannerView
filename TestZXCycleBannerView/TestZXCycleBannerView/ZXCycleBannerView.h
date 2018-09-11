@@ -39,12 +39,14 @@
 @property (nonatomic, copy) void(^monitorIndex)(NSInteger currentIndex);
 
 @property (nonatomic, assign) BOOL showPageControl;
-@property (nonatomic, strong) UIColor *pageControlTintColor;
-@property (nonatomic, strong) UIColor *pageControlCurrentTintColor;
+
+@property (nonatomic,assign) BOOL infiniteLoop;
 
 @property (nonatomic, weak) id<ZXCycleBannerViewDelegate> delegate;
 @property (nonatomic, weak) id<ZXCycleBannerViewDataSource> dataSource;
 
 - (UIView *)dequeueReuseViewWithReuseIdentifier:(NSString *)identifier forIndex:(NSInteger)index;
+
+- (void)reload;
 
 @end

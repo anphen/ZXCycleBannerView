@@ -10,8 +10,6 @@
 
 @interface ZXCycleCollectionViewCell : UICollectionViewCell
 
-@property (nonatomic, copy) NSString *imageName;
-
 @property (nonatomic, strong) UIView *bannerItemView;
 
 @end

@@ -9,7 +9,7 @@
 #import "ZXCycleBannerView.h"
 #import "ZXCycleCollectionViewCell.h"
 #import <objc/runtime.h>
-#import "NSObject+YYAddForKVO.h"
+#import "NSObject+ZXForKVO.h"
 #import "ZXPageControl.h"
 
 static NSString *const cellIdentifier = @"CycleCellIdentifier";
@@ -54,11 +54,47 @@ static char UIViewReuseIdentifier;
 }
 
 - (void)commonInit{
+    _infiniteLoop = NO;
     _currentIndex = 0;
     _autoScroll = NO;
     _autoScrollTimeInterval = 3.0;
     _reUseViewArray = [NSMutableArray array];
 }
+
+
+- (void)reload{
+    [self.reUseViewArray removeAllObjects];
+    if ([self.dataSource respondsToSelector:@selector(numberOfItemsZXCycleBannerView:)]) {
+        self.itemCount = [self.dataSource numberOfItemsZXCycleBannerView:self];
+        self.maxContentOffsetX = self.mainCollectionView.frame.size.width * (self.itemCount * (multiple - 1));
+    }
+    [self.mainCollectionView reloadData];
+
+    if (self.infiniteLoop) {
+        [self locateMiddleFirstIndex];
+    }
+    if (self.showPageControl) {
+        self.pageControl.numberOfPages =  self.itemCount;
+    }
+    self.autoScroll = self.autoScroll;
+    if (self.itemCount > 1) {
+        __weak typeof(self)weakSelf = self;
+        [self.mainCollectionView ZXAddObserverBlockForKeyPath:@"contentOffset" block:^(id  _Nonnull obj, id  _Nullable oldVal, id  _Nullable newVal) {
+            if (weakSelf.mainCollectionView.contentOffset.x >= weakSelf.maxContentOffsetX ||
+                weakSelf.mainCollectionView.contentOffset.x <= 0) {
+                if (weakSelf.infiniteLoop) {
+                    [weakSelf locateMiddleFirstIndex];
+                }
+            }
+            NSInteger count = (weakSelf.mainCollectionView.contentOffset.x + weakSelf.mainCollectionView.frame.size.width * 0.5)/ weakSelf.mainCollectionView.frame.size.width;
+            weakSelf.currentIndex = count % weakSelf.itemCount;
+        }];
+    }
+    else{
+        [self.mainCollectionView ZXRemoveObserverBlocks];
+    }
+}
+
 
 - (void)setupMainView{
     [self addSubview:self.mainCollectionView];
@@ -74,21 +110,14 @@ static char UIViewReuseIdentifier;
 
 //解决当timer释放后 回调scrollViewDidScroll时访问野指针导致崩溃
 - (void)dealloc {
+    [_mainCollectionView ZXRemoveObserverBlocks];
     _mainCollectionView.delegate = nil;
     _mainCollectionView.dataSource = nil;
 }
 
 - (void)setDataSource:(id<ZXCycleBannerViewDataSource>)dataSource{
     _dataSource = dataSource;
-    if ([dataSource respondsToSelector:@selector(numberOfItemsZXCycleBannerView:)]) {
-        self.itemCount = [self.dataSource numberOfItemsZXCycleBannerView:self];
-        self.maxContentOffsetX = self.mainCollectionView.frame.size.width * (self.itemCount * (multiple - 1));
-    }
-    [self locateMiddleFirstIndex];
-    [self.mainCollectionView reloadData];
-    if (self.showPageControl) {
-        self.pageControl.numberOfPages =  self.itemCount;
-    }
+    [self reload];
 }
 
 - (void)setDelegate:(id<ZXCycleBannerViewDelegate>)delegate{
@@ -126,15 +155,6 @@ static char UIViewReuseIdentifier;
         _mainCollectionView.bounces = NO;
         _mainCollectionView.backgroundColor = [UIColor clearColor];
         [_mainCollectionView registerClass:NSClassFromString(@"ZXCycleCollectionViewCell") forCellWithReuseIdentifier:cellIdentifier];
-        __weak typeof(self)weakSelf = self;
-        [_mainCollectionView addObserverBlockForKeyPath:@"contentOffset" block:^(id  _Nonnull obj, id  _Nullable oldVal, id  _Nullable newVal) {
-            if (weakSelf.mainCollectionView.contentOffset.x >= weakSelf.maxContentOffsetX ||
-                weakSelf.mainCollectionView.contentOffset.x <= 0) {
-                [weakSelf locateMiddleFirstIndex];
-            }
-            NSInteger count = (self.mainCollectionView.contentOffset.x + self.mainCollectionView.frame.size.width * 0.5)/ self.mainCollectionView.frame.size.width;
-            weakSelf.currentIndex = count % weakSelf.itemCount;
-        }];
     }
     return _mainCollectionView;
 }
@@ -143,7 +163,7 @@ static char UIViewReuseIdentifier;
 {
     if (!_flowLayout) {
         _flowLayout = [[UICollectionViewFlowLayout alloc]init];
-        _flowLayout.itemSize = CGSizeMake(self.frame.size.width, self.frame.size.height);
+        _flowLayout.itemSize = CGSizeMake(self.mainCollectionView.frame.size.width, self.mainCollectionView.frame.size.height);
         _flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
         _flowLayout.minimumLineSpacing = 0;
         _flowLayout.minimumInteritemSpacing = 0;
@@ -168,7 +188,7 @@ static char UIViewReuseIdentifier;
 - (ZXPageControl *)pageControl
 {
     if (!_pageControl) {
-        _pageControl = [[ZXPageControl alloc]initWithFrame:CGRectMake(0, self.frame.size.height - 50, self.frame.size.width, 50)];
+        _pageControl = [[ZXPageControl alloc]initWithFrame:CGRectMake(0, self.frame.size.height - 15, self.frame.size.width, 15)];
     }
     return _pageControl;
 }
@@ -186,6 +206,7 @@ static char UIViewReuseIdentifier;
     if (showPageControl) {
         self.pageControl.numberOfPages = self.itemCount;
         [self addSubview:self.pageControl];
+        
     }
 }
 
@@ -200,12 +221,18 @@ static char UIViewReuseIdentifier;
 - (NSInteger)collectionView:(UICollectionView *)collectionView
      numberOfItemsInSection:(NSInteger)section
 {
-    return self.itemCount * multiple;
+    if (!self.infiniteLoop) {
+        return self.itemCount;
+    }
+    else{
+        return self.itemCount * multiple;
+    }
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    NSLog(@"========== %li ==========", indexPath.row);
     ZXCycleCollectionViewCell *cell = (ZXCycleCollectionViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
     if ([self.dataSource respondsToSelector:@selector(bannerView:viewForItemAtIndex:)]) {
         NSInteger viewIndex = indexPath.row % self.itemCount;
@@ -226,13 +253,6 @@ static char UIViewReuseIdentifier;
     }
     return cell;
 }
-
-- (void)adjustContentOffsetX{
-    if (self.mainCollectionView.contentOffset.x == 0 ||self.mainCollectionView.contentOffset.x == self.maxContentOffsetX) {
-        [self locateMiddleFirstIndex];
-    }
-}
-
 #pragma mark - UIScrollViewDelegate
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
@@ -252,6 +272,9 @@ static char UIViewReuseIdentifier;
 - (void)setupTimer
 {
     [self invalidateTimer];
+    if (self.itemCount <= 1) {
+        return;
+    }
     NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:self.autoScrollTimeInterval target:self selector:@selector(automaticScroll) userInfo:nil repeats:YES];
     _timer = timer;
     [[NSRunLoop mainRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
@@ -259,7 +282,17 @@ static char UIViewReuseIdentifier;
 
 - (void)automaticScroll
 {
+    if (self.itemCount <= 1) {
+        return;
+    }
     CGFloat currentOffsetX = self.mainCollectionView.contentOffset.x;
+
+    if (!self.infiniteLoop) {
+        if (self.mainCollectionView.frame.size.width * (self.itemCount - 1) == currentOffsetX) {
+            return;
+        }
+    }
+    
     [self.mainCollectionView setContentOffset:CGPointMake((currentOffsetX + self.mainCollectionView.frame.size.width), 0) animated:YES];
 }
 
