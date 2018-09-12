@@ -9,8 +9,12 @@
 #import "ViewController.h"
 #import "ZXCycleBannerView.h"
 #import "ZXPinProductsView.h"
+#import "ZXBrandPinProductsView.h"
 
-@interface ViewController ()<ZXCycleBannerViewDelegate, ZXCycleBannerViewDataSource, ZXPinProductViewDelegate>
+#define pin
+//#define pinBrand
+
+@interface ViewController ()<ZXCycleBannerViewDelegate, ZXCycleBannerViewDataSource, ZXPinProductViewDelegate, ZXBrandPinSingleProductViewDelegate>
 
 @end
 
@@ -19,19 +23,32 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    ZXCycleBannerView *bannerView = [[ZXCycleBannerView alloc]initWithFrame:CGRectMake(0, 240, self.view.frame.size.width, self.view.frame.size.width * 110 /169.0)];
-    bannerView.delegate = self;
-    bannerView.dataSource = self;
-    [self.view addSubview:bannerView];
-    bannerView.autoScrollTimeInterval = 3.0;
-    bannerView.autoScroll = YES;
-    bannerView.showPageControl = YES;
+//    ZXCycleBannerView *bannerView = [[ZXCycleBannerView alloc]initWithFrame:CGRectMake(0, 240, self.view.frame.size.width, self.view.frame.size.width * 110 /169.0)];
+//    bannerView.delegate = self;
+//    bannerView.dataSource = self;
+//    [self.view addSubview:bannerView];
+//    bannerView.autoScrollTimeInterval = 3.0;
+//    bannerView.autoScroll = YES;
+//    bannerView.showPageControl = YES;
+#ifdef pin
+    ZXPinProductsView *view = [[ZXPinProductsView alloc]initWithFrame:CGRectMake(0, 100, self.view.frame.size.width, [ZXPinProductsView cellHeightWithType:ZXPinProductViewTypePinCount])];
+    [view configCellWithProducts:@[@"1",@"2",@"3",@"4",@"5",@"6",@"7",@"8",@"9",@"10",@"11",@"12",@"13",@"14",@"15"]
+                            type:ZXPinProductViewTypePinCount];
+    view.delegate = self;
+    [self.view addSubview:view];
+#endif
     
-//    ZXPinProductsView *view = [[ZXPinProductsView alloc]initWithFrame:CGRectMake(0, 200, self.view.frame.size.width, [ZXPinProductsView cellHeightWithType:ZXPinProductViewTypePinCount])];
-//    [view configCellWithProducts:@[@"1",@"2",@"3",@"4",@"5",@"6",@"7",@"8",@"9",@"10",@"11",@"12",@"13",@"14",@"15"]
-//                            type:ZXPinProductViewTypePinCount];
-//    view.delegate = self;
-//    [self.view addSubview:view];
+#ifdef pinBrand
+    ZXBrandPinProductsView *view1 = [[ZXBrandPinProductsView alloc]initWithFrame:CGRectMake(0, 400, self.view.frame.size.width ,175)];
+    [view1 configCellWithProductArray:@[@"1",@"2",@"3",@"4",@"5",@"6",@"7",@"8",@"9",@"10",@"11",@"12",@"13",@"14",@"15"]];
+    view1.delegate = self;
+
+    [self.view addSubview:view1];
+#endif
+}
+
+- (void)clickBrandProdView:(ZXBrandPinSingleProductView *)prodView atIndex:(NSInteger)index{
+    NSLog(@"======== index = %li =====", index);
 }
 
 - (void)clickProdView:(ZXPinProductView *)prodView atIndex:(NSInteger)index{

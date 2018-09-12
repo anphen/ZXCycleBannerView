@@ -218,6 +218,12 @@ static char UIViewReuseIdentifier;
 }
 
 #pragma mark - UICollectionViewDataSource
+- (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath{
+    if (cell.contentView.subviews.count == 0) {
+        [((ZXCycleCollectionViewCell *)cell) reAddBannerItemView];
+    }
+}
+
 - (NSInteger)collectionView:(UICollectionView *)collectionView
      numberOfItemsInSection:(NSInteger)section
 {

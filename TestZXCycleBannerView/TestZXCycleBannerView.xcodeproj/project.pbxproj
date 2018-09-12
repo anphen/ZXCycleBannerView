@@ -32,6 +32,7 @@
 		6E48202B2146593200C7B0A7 /* MASViewAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E4820212146593200C7B0A7 /* MASViewAttribute.m */; };
 		6EB2C3522147989C00B41990 /* ZXPinProductsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EB2C3512147989C00B41990 /* ZXPinProductsView.m */; };
 		6EB2C3552147DE4000B41990 /* NSObject+ZXForKVO.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EB2C3542147DE4000B41990 /* NSObject+ZXForKVO.m */; };
+		6EB2C3582148F11300B41990 /* ZXBrandPinProductsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EB2C3572148F11300B41990 /* ZXBrandPinProductsView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -105,6 +106,8 @@
 		6EB2C3512147989C00B41990 /* ZXPinProductsView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZXPinProductsView.m; sourceTree = "<group>"; };
 		6EB2C3532147DE4000B41990 /* NSObject+ZXForKVO.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+ZXForKVO.h"; sourceTree = "<group>"; };
 		6EB2C3542147DE4000B41990 /* NSObject+ZXForKVO.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSObject+ZXForKVO.m"; sourceTree = "<group>"; };
+		6EB2C3562148F11300B41990 /* ZXBrandPinProductsView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZXBrandPinProductsView.h; sourceTree = "<group>"; };
+		6EB2C3572148F11300B41990 /* ZXBrandPinProductsView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZXBrandPinProductsView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -170,6 +173,8 @@
 				6E4820062146521D00C7B0A7 /* ZXPageControl.m */,
 				6EB2C3502147989C00B41990 /* ZXPinProductsView.h */,
 				6EB2C3512147989C00B41990 /* ZXPinProductsView.m */,
+				6EB2C3562148F11300B41990 /* ZXBrandPinProductsView.h */,
+				6EB2C3572148F11300B41990 /* ZXBrandPinProductsView.m */,
 				6E4820012146503A00C7B0A7 /* pagecontrol_dot_normal@2x.png */,
 				6E4820022146503A00C7B0A7 /* pagecontrol_dot_select@2x.png */,
 				6E481EC32146494B00C7B0A7 /* Main.storyboard */,
@@ -366,6 +371,7 @@
 				6E4820242146593200C7B0A7 /* MASCompositeConstraint.m in Sources */,
 				6E481EC22146494B00C7B0A7 /* ViewController.m in Sources */,
 				6E4820262146593200C7B0A7 /* MASLayoutConstraint.m in Sources */,
+				6EB2C3582148F11300B41990 /* ZXBrandPinProductsView.m in Sources */,
 				6E48202A2146593200C7B0A7 /* MASViewConstraint.m in Sources */,
 				6E48202B2146593200C7B0A7 /* MASViewAttribute.m in Sources */,
 				6E4820292146593200C7B0A7 /* MASConstraint.m in Sources */,

@@ -12,4 +12,6 @@
 
 @property (nonatomic, strong) UIView *bannerItemView;
 
+- (void)reAddBannerItemView;
+
 @end

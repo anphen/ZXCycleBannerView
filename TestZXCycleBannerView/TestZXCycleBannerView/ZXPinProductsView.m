@@ -166,7 +166,7 @@
         self.firstProd = [[ZXPinProductView alloc]initWithType:type delegete:self];
         self.secondProd = [[ZXPinProductView alloc]initWithType:type delegete:self];
         self.thirdProd = [[ZXPinProductView alloc]initWithType:type delegete:self];
-        self.backgroundColor = kRandomColor;
+        self.backgroundColor = kClearColor;
         [self addSubview:self.firstProd];
         [self addSubview:self.secondProd];
         [self addSubview:self.thirdProd];
@@ -209,7 +209,7 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        self.bgImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, frame.size.width, 38.5)];
+        self.bgImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, frame.size.width, self.frame.size.height)];
         self.bgImageView.contentMode = UIViewContentModeScaleAspectFit;
         self.bgImageView.backgroundColor = kRandomColor;
         self.mainScrollView = [[ZXCycleBannerView alloc]initWithFrame:CGRectMake(0, 38.5, frame.size.width, frame.size.height - 38.5)];
@@ -217,8 +217,8 @@
         self.mainScrollView.dataSource = self;
         self.mainScrollView.autoScroll = YES;
         self.mainScrollView.showPageControl = YES;
-        self.mainScrollView.infiniteLoop = NO;
-        self.mainScrollView.backgroundColor = kRandomColor;
+        self.mainScrollView.infiniteLoop = YES;
+        self.mainScrollView.backgroundColor = kClearColor;
         [self addSubview:self.bgImageView];
         [self addSubview:self.mainScrollView];
     }

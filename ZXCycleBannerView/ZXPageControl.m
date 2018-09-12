@@ -66,6 +66,7 @@
         [self initialization];
         self.contentMode = UIViewContentModeScaleAspectFit;
         self.clipsToBounds = YES;
+        self.backgroundColor = [UIColor clearColor];
     }
     return self;
 }
@@ -153,6 +154,14 @@
     
     [self.dotContentView layoutIfNeeded];
     _currentPage = currentPage;
+}
+
+- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event{
+    CGPoint coverPoint =  [self.dotContentView convertPoint:point fromView:self];
+    if ([self.dotContentView pointInside:coverPoint withEvent:event]) {
+        return YES;
+    }
+    return NO;
 }
 
 @end
