@@ -143,6 +143,11 @@ static char UIViewReuseIdentifier;
 }
 
 #pragma mark - getters and setters
+- (void)setInfiniteLoop:(BOOL)infiniteLoop{
+    _infiniteLoop = infiniteLoop;
+    [self reload];
+}
+
 - (UICollectionView *)mainCollectionView
 {
     if (!_mainCollectionView) {

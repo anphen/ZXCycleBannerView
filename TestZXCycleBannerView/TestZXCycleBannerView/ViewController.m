@@ -12,7 +12,7 @@
 #import "ZXBrandPinProductsView.h"
 
 #define pin
-//#define pinBrand
+#define pinBrand
 
 @interface ViewController ()<ZXCycleBannerViewDelegate, ZXCycleBannerViewDataSource, ZXPinProductViewDelegate, ZXBrandPinSingleProductViewDelegate>
 
