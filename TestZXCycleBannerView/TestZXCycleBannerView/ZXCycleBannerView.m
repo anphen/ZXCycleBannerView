@@ -61,7 +61,6 @@ static char UIViewReuseIdentifier;
     _reUseViewArray = [NSMutableArray array];
 }
 
-
 - (void)reload{
     [self.reUseViewArray removeAllObjects];
     if ([self.dataSource respondsToSelector:@selector(numberOfItemsZXCycleBannerView:)]) {
