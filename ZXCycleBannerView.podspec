@@ -19,6 +19,6 @@ Pod::Spec.new do |s|
 
   s.resources = "ZXCycleBannerView/*.png"
 
-  s.dependency "Masonry", "~> 1.1.0"
+  s.dependency "Masonry", ">= 1.0.0"
 
 end
