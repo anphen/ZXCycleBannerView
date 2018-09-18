@@ -11,7 +11,7 @@
 #import "ZXPinProductsView.h"
 #import "ZXBrandPinProductsView.h"
 
-#define pin
+//#define pin
 #define pinBrand
 
 @interface ViewController ()<ZXCycleBannerViewDelegate, ZXCycleBannerViewDataSource, ZXPinProductViewDelegate, ZXBrandPinSingleProductViewDelegate>
@@ -40,7 +40,7 @@
     
 #ifdef pinBrand
     ZXBrandPinProductsView *view1 = [[ZXBrandPinProductsView alloc]initWithFrame:CGRectMake(0, 400, self.view.frame.size.width ,175)];
-    [view1 configCellWithProductArray:@[@"1",@"2",@"3",@"4",@"5",@"6",@"7",@"8",@"9",@"10",@"11",@"12",@"13",@"14",@"15"]];
+    [view1 configCellWithProductArray:@[@"1", @"2"]];
     view1.delegate = self;
 
     [self.view addSubview:view1];
