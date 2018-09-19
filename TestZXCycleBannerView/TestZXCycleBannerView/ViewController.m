@@ -40,7 +40,7 @@
     
 #ifdef pinBrand
     ZXBrandPinProductsView *view1 = [[ZXBrandPinProductsView alloc]initWithFrame:CGRectMake(0, 400, self.view.frame.size.width ,175)];
-    [view1 configCellWithProductArray:@[@"1", @"2"]];
+    [view1 configCellWithProductArray:@[@"1",@"2"]];
     view1.delegate = self;
 
     [self.view addSubview:view1];

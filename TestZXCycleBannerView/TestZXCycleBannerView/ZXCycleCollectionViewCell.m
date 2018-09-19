@@ -30,13 +30,16 @@
 
 - (void)setBannerItemView:(UIView *)bannerItemView{
     if (_bannerItemView == bannerItemView) {
+        [self reAddBannerItemView];
         return;
     }
-    [_bannerItemView removeFromSuperview];
-    _bannerItemView = bannerItemView;
     if (bannerItemView) {
         [self.contentView addSubview:bannerItemView];
     }
+    if (self.contentView.subviews.count > 1) {
+        [_bannerItemView removeFromSuperview];
+    }
+    _bannerItemView = bannerItemView;
 }
 
 - (void)reAddBannerItemView{

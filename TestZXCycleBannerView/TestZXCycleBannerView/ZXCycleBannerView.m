@@ -88,9 +88,11 @@ static char UIViewReuseIdentifier;
             NSInteger count = (weakSelf.mainCollectionView.contentOffset.x + weakSelf.mainCollectionView.frame.size.width * 0.5)/ weakSelf.mainCollectionView.frame.size.width;
             weakSelf.currentIndex = count % weakSelf.itemCount;
         }];
+        self.mainCollectionView.scrollEnabled = YES;
     }
     else{
         [self.mainCollectionView ZXRemoveObserverBlocks];
+        self.mainCollectionView.scrollEnabled = NO;
     }
 }
 
@@ -223,8 +225,26 @@ static char UIViewReuseIdentifier;
 
 #pragma mark - UICollectionViewDataSource
 - (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath{
-    if (cell.contentView.subviews.count == 0) {
-        [((ZXCycleCollectionViewCell *)cell) reAddBannerItemView];
+//    if (cell.contentView.subviews.count == 0) {
+//        [((ZXCycleCollectionViewCell *)cell) reAddBannerItemView];
+//    }
+    NSLog(@"========== %li ==========", indexPath.row);
+    if ([self.dataSource respondsToSelector:@selector(bannerView:viewForItemAtIndex:)]) {
+        NSInteger viewIndex = indexPath.row % self.itemCount;
+        UIView * currentView = [self.dataSource bannerView:self viewForItemAtIndex:viewIndex];
+        if (currentView) {
+            ((ZXCycleCollectionViewCell *)cell).bannerItemView = currentView;
+            BOOL isExist = NO;
+            for (UIView *view1 in self.reUseViewArray) {
+                if ([view1.reuseIdentifier isEqualToString:currentView.reuseIdentifier]) {
+                    isExist = YES;
+                    break;
+                }
+            }
+            if (!isExist) {
+                [self.reUseViewArray addObject:currentView];
+            };
+        }
     }
 }
 
@@ -242,25 +262,9 @@ static char UIViewReuseIdentifier;
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"========== %li ==========", indexPath.row);
+    
     ZXCycleCollectionViewCell *cell = (ZXCycleCollectionViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
-    if ([self.dataSource respondsToSelector:@selector(bannerView:viewForItemAtIndex:)]) {
-        NSInteger viewIndex = indexPath.row % self.itemCount;
-        UIView * currentView = [self.dataSource bannerView:self viewForItemAtIndex:viewIndex];
-        if (currentView) {
-            cell.bannerItemView = currentView;
-            BOOL isExist = NO;
-            for (UIView *view1 in self.reUseViewArray) {
-                if ([view1.reuseIdentifier isEqualToString:currentView.reuseIdentifier]) {
-                    isExist = YES;
-                    break;
-                }
-            }
-            if (!isExist) {
-                [self.reUseViewArray addObject:currentView];
-            };
-        }
-    }
+    
     return cell;
 }
 #pragma mark - UIScrollViewDelegate
