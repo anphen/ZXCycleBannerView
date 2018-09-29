@@ -73,7 +73,7 @@
 
 - (void)initialization{
     _numberOfPages = 0;
-    _currentPage = NSIntegerMax;
+    _currentPage = 0;
     _hidesForSinglePage = YES;
     _horizontalSpace = 2.f;
     _pageIndicatorImageName = @"pagecontrol_dot_normal";
@@ -123,21 +123,16 @@
             }];
             lastDot = dot;
         }
-        self.currentPage = 0;
+        DotImageControl *currentImagedot = [self.dotArray objectAtIndex:0];
+        currentImagedot.select = YES;
+        currentImagedot.widthConstraint.mas_equalTo(self.dotSelectSize.width);
+        currentImagedot.hegihtConstraint.mas_equalTo(self.dotSelectSize.height);
+        _currentPage = 0;
+        [self.dotContentView layoutIfNeeded];
     }
 }
 
 - (void)setCurrentPage:(NSInteger)currentPage{
-    if (_currentPage == NSIntegerMax) {
-        //初始设置
-        DotImageControl *currentImagedot = [self.dotArray objectAtIndex:0];
-        currentImagedot.select = YES;
-        _currentPage = 0;
-        currentImagedot.widthConstraint.mas_equalTo(self.dotSelectSize.width);
-        currentImagedot.hegihtConstraint.mas_equalTo(self.dotSelectSize.height);
-        [self.dotContentView layoutIfNeeded];
-        return;
-    }
     if (_currentPage == currentPage || currentPage < 0 || currentPage >= self.numberOfPages) {
         return;
     }
