@@ -96,7 +96,6 @@ static char UIViewReuseIdentifier;
     }
 }
 
-
 - (void)setupMainView{
     [self addSubview:self.mainCollectionView];
 }
@@ -137,7 +136,9 @@ static char UIViewReuseIdentifier;
 
 - (void)locateMiddleFirstIndex{
     [self invalidateTimer];
+    self.userInteractionEnabled = NO;
     [self.mainCollectionView setContentOffset:CGPointMake((self.itemCount * 0.5 * multiple) * self.mainCollectionView.frame.size.width, 0)];
+    self.userInteractionEnabled = YES;
     if (self.autoScroll) {
         [self setupTimer];
     }
@@ -225,10 +226,6 @@ static char UIViewReuseIdentifier;
 
 #pragma mark - UICollectionViewDataSource
 - (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath{
-//    if (cell.contentView.subviews.count == 0) {
-//        [((ZXCycleCollectionViewCell *)cell) reAddBannerItemView];
-//    }
-    NSLog(@"========== %li ==========", indexPath.row);
     if ([self.dataSource respondsToSelector:@selector(bannerView:viewForItemAtIndex:)]) {
         NSInteger viewIndex = indexPath.row % self.itemCount;
         UIView * currentView = [self.dataSource bannerView:self viewForItemAtIndex:viewIndex];
@@ -306,8 +303,8 @@ static char UIViewReuseIdentifier;
             return;
         }
     }
-    
-    [self.mainCollectionView setContentOffset:CGPointMake((currentOffsetX + self.mainCollectionView.frame.size.width), 0) animated:YES];
+
+    [self.mainCollectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:self.mainCollectionView.contentOffset.x/ self.mainCollectionView.frame.size.width + 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionNone animated:YES];
 }
 
 - (void)invalidateTimer

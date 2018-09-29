@@ -61,7 +61,6 @@ static char UIViewReuseIdentifier;
     _reUseViewArray = [NSMutableArray array];
 }
 
-
 - (void)reload{
     [self.reUseViewArray removeAllObjects];
     if ([self.dataSource respondsToSelector:@selector(numberOfItemsZXCycleBannerView:)]) {
@@ -89,12 +88,13 @@ static char UIViewReuseIdentifier;
             NSInteger count = (weakSelf.mainCollectionView.contentOffset.x + weakSelf.mainCollectionView.frame.size.width * 0.5)/ weakSelf.mainCollectionView.frame.size.width;
             weakSelf.currentIndex = count % weakSelf.itemCount;
         }];
+        self.mainCollectionView.scrollEnabled = YES;
     }
     else{
         [self.mainCollectionView ZXRemoveObserverBlocks];
+        self.mainCollectionView.scrollEnabled = NO;
     }
 }
-
 
 - (void)setupMainView{
     [self addSubview:self.mainCollectionView];
@@ -136,7 +136,9 @@ static char UIViewReuseIdentifier;
 
 - (void)locateMiddleFirstIndex{
     [self invalidateTimer];
+    self.userInteractionEnabled = NO;
     [self.mainCollectionView setContentOffset:CGPointMake((self.itemCount * 0.5 * multiple) * self.mainCollectionView.frame.size.width, 0)];
+    self.userInteractionEnabled = YES;
     if (self.autoScroll) {
         [self setupTimer];
     }
@@ -224,8 +226,22 @@ static char UIViewReuseIdentifier;
 
 #pragma mark - UICollectionViewDataSource
 - (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath{
-    if (cell.contentView.subviews.count == 0) {
-        [((ZXCycleCollectionViewCell *)cell) reAddBannerItemView];
+    if ([self.dataSource respondsToSelector:@selector(bannerView:viewForItemAtIndex:)]) {
+        NSInteger viewIndex = indexPath.row % self.itemCount;
+        UIView * currentView = [self.dataSource bannerView:self viewForItemAtIndex:viewIndex];
+        if (currentView) {
+            ((ZXCycleCollectionViewCell *)cell).bannerItemView = currentView;
+            BOOL isExist = NO;
+            for (UIView *view1 in self.reUseViewArray) {
+                if ([view1.reuseIdentifier isEqualToString:currentView.reuseIdentifier]) {
+                    isExist = YES;
+                    break;
+                }
+            }
+            if (!isExist) {
+                [self.reUseViewArray addObject:currentView];
+            };
+        }
     }
 }
 
@@ -243,25 +259,9 @@ static char UIViewReuseIdentifier;
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"========== %li ==========", indexPath.row);
+    
     ZXCycleCollectionViewCell *cell = (ZXCycleCollectionViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
-    if ([self.dataSource respondsToSelector:@selector(bannerView:viewForItemAtIndex:)]) {
-        NSInteger viewIndex = indexPath.row % self.itemCount;
-        UIView * currentView = [self.dataSource bannerView:self viewForItemAtIndex:viewIndex];
-        if (currentView) {
-            cell.bannerItemView = currentView;
-            BOOL isExist = NO;
-            for (UIView *view1 in self.reUseViewArray) {
-                if ([view1.reuseIdentifier isEqualToString:currentView.reuseIdentifier]) {
-                    isExist = YES;
-                    break;
-                }
-            }
-            if (!isExist) {
-                [self.reUseViewArray addObject:currentView];
-            };
-        }
-    }
+    
     return cell;
 }
 #pragma mark - UIScrollViewDelegate
@@ -303,8 +303,8 @@ static char UIViewReuseIdentifier;
             return;
         }
     }
-    
-    [self.mainCollectionView setContentOffset:CGPointMake((currentOffsetX + self.mainCollectionView.frame.size.width), 0) animated:YES];
+
+    [self.mainCollectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:self.mainCollectionView.contentOffset.x/ self.mainCollectionView.frame.size.width + 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionNone animated:YES];
 }
 
 - (void)invalidateTimer

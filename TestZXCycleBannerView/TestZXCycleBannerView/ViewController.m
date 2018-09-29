@@ -23,6 +23,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    UIScrollView *scorll = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+    scorll.contentSize = CGSizeMake(scorll.frame.size.width, 1000);
+    
 //    ZXCycleBannerView *bannerView = [[ZXCycleBannerView alloc]initWithFrame:CGRectMake(0, 240, self.view.frame.size.width, self.view.frame.size.width * 110 /169.0)];
 //    bannerView.delegate = self;
 //    bannerView.dataSource = self;
@@ -30,25 +33,30 @@
 //    bannerView.autoScrollTimeInterval = 3.0;
 //    bannerView.autoScroll = YES;
 //    bannerView.showPageControl = YES;
+    
+    [self.view addSubview:scorll];
 #ifdef pin
     ZXPinProductsView *view = [[ZXPinProductsView alloc]initWithFrame:CGRectMake(0, 100, self.view.frame.size.width, [ZXPinProductsView cellHeightWithType:ZXPinProductViewTypePinCount])];
     [view configCellWithProducts:@[@"1",@"2",@"3",@"4",@"5",@"6",@"7",@"8",@"9",@"10",@"11",@"12",@"13",@"14",@"15"]
                             type:ZXPinProductViewTypePinCount];
     view.delegate = self;
-    [self.view addSubview:view];
+    [scorll addSubview:view];
 #endif
     
 #ifdef pinBrand
     ZXBrandPinProductsView *view1 = [[ZXBrandPinProductsView alloc]initWithFrame:CGRectMake(0, 400, self.view.frame.size.width ,175)];
-    [view1 configCellWithProductArray:@[@"1",@"2"]];
+    [view1 configCellWithProductArray:@[@"1", @"2"]];
     view1.delegate = self;
 
-    [self.view addSubview:view1];
+    [scorll addSubview:view1];
 #endif
 }
 
 - (void)clickBrandProdView:(ZXBrandPinSingleProductView *)prodView atIndex:(NSInteger)index{
     NSLog(@"======== index = %li =====", index);
+    UIViewController *vc = [[UIViewController alloc]init];
+    vc.view.backgroundColor = [UIColor whiteColor];
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 - (void)clickProdView:(ZXPinProductView *)prodView atIndex:(NSInteger)index{
